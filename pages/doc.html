@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document Viewer</title>
+  <script src="../static/mammoth.browser.min.js"></script>
+  <style>
+    #document-container {
+      width: 100%;
+      height: 100vh;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <input type="file" id="file-input" accept=".doc, .docx">
+  <div id="document-container"></div>
+
+  <script>
+    document.getElementById('file-input').addEventListener('change', function(event) {
+      var file = event.target.files[0];
+      convertToHtml(file);
+    });
+
+    function convertToHtml(file) {
+      var options = {
+        styleMap: [
+          "p[style-name='WarningHeading'] => h1.warning"
+        ]
+      };
+
+      var convertedDoc;
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var arrayBuffer = e.target.result;
+
+        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+          .then(function(result) {
+            var html = result.value; // The raw HTML code
+
+            return mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, options)
+              .then(function(result) {
+                convertedDoc = result.value; // The converted HTML
+
+                showDocument(convertedDoc);
+              });
+          });
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    function showDocument(html) {
+      var container = document.getElementById('document-container');
+      container.innerHTML = html;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<html>
+<head>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <table id="fileTable">
+    <thead>
+      <tr>
+        <th>内容块ID</th>
+        <th>修改时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="fileTableBody"></tbody>
+  </table>
+
+  <script>
+    function listFiles(path) {
+      fetch('/api/file/readDir', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ path: path })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.code === 0) {
+          const fileTableBody = document.getElementById('fileTableBody');
+
+          data.data.forEach(file => {
+            const row = document.createElement('tr');
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = file.name;
+            row.appendChild(nameCell);
+
+            const updatedCell = document.createElement('td');
+            updatedCell.textContent = new Date(file.updated * 1000).toLocaleString();
+            row.appendChild(updatedCell);
+
+            const actionsCell = document.createElement('td');
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => {
+              deleteFile(file.name);
+            });
+            actionsCell.appendChild(deleteButton);
+            row.appendChild(actionsCell);
+
+            fileTableBody.appendChild(row);
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function deleteFile(path) {
+      fetch('/api/file/removeFile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ path: "/data/widgets/docs-all-in-one/data/"+path })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.code === 0) {
+          console.log('File deleted successfully.');
+          location.reload(); // 刷新网页
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    // Call the function with the desired path
+    listFiles('/data/widgets/docs-all-in-one/data');
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "widget-sample",
+  "author": "Vanessa",
+  "url": "https://github.com/docs-all-in-one",
+  "version": "0.0.1",
+  "minAppVersion": "1.1.1",
+  "displayName": {
+    "default": "docs-all-in-one",
+    "zh_CN": "文档聚合"
+  },
+  "description": {
+    "default": "I really don't want to switch screens to see other documents anymore",
+    "zh_CN": "我实在是不想切屏幕去看其他文档了"
+  },
+  "readme": {
+    "default": "README.md",
+    "zh_CN": "README_zh_CN.md"
+  },
+  "funding": {
+    "openCollective": "",
+    "patreon": "",
+    "github": "",
+    "custom": [
+      ""
+    ]
+  }
+}

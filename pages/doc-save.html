@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document Viewer</title>
+  <script src="../static/mammoth.browser.min.js"></script>
+  <style>
+    #document-container {
+      width: 100%;
+      height: 100vh;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <input type="file" id="file-input" accept=".doc, .docx">
+  <div id="document-container"></div>
+
+  <script>
+    document.getElementById('file-input').addEventListener('change', function(event) {
+      var file = event.target.files[0];
+      convertToHtml(file);
+    });
+
+    function convertToHtml(file) {
+      var options = {
+        styleMap: [
+          "p[style-name='WarningHeading'] => h1.warning"
+        ]
+      };
+
+      var convertedDoc;
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var arrayBuffer = e.target.result;
+
+        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+          .then(function(result) {
+            var html = result.value; // The raw HTML code
+
+            return mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, options)
+              .then(function(result) {
+                convertedDoc = result.value; // The converted HTML
+
+                showDocument(convertedDoc);
+
+                generateSnapshot();
+              });
+          });
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    function showDocument(html) {
+      var container = document.getElementById('document-container');
+      container.innerHTML = html;
+    }
+
+    function generateSnapshot() {
+      var container = document.getElementById('document-container');
+      var snapshot = container.innerHTML;
+
+      var id = window.frameElement.parentElement.parentElement.getAttribute("data-node-id");
+      var fileName = id + '.html';
+
+      var formData = new FormData();
+      formData.append('assetsDirPath', 'widgets/docs-all-in-one/data');
+      formData.append('file[]', new Blob([snapshot], { type: 'text/html' }), fileName);
+
+      fetch('/api/asset/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        var succMap = data.data.succMap;
+        if (succMap && succMap[fileName]) {
+          var snapshotUrl = succMap[fileName];
+          console.log('Snapshot uploaded successfully:', snapshotUrl);
+        } else {
+          console.error('Failed to upload snapshot');
+        }
+      })
+      .catch(error => {
+        console.error('Error uploading snapshot:', error);
+      });
+    }
+  </script>
+</body>
+</html>

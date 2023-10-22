@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel Viewer</title>
+    <link rel="stylesheet" href="../static/handsontable.full.min.css">
+    <script src="../static/handsontable.full.min.js"></script>
+    <script src="../static/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- 添加一个按钮 -->
+    <button onclick="handleFileSelect()">选择文件</button>
+
+    <!-- 添加一个下拉菜单 -->
+    <select onchange="showSelectedSheet()">
+        <option value="">请选择表格</option>
+    </select>
+
+    <div id="excelContainer"></div>
+
+    <!-- JavaScript代码 -->
+    <script>
+        let workbook = null; // 声明一个全局变量保存workbook对象
+
+        function showSelectedSheet() {
+            const select = document.querySelector('select');
+            const selectedSheetName = select.value;
+
+            // 清空excelContainer中的内容
+            const excelContainer = document.getElementById('excelContainer');
+            excelContainer.innerHTML = '';
+
+            // 判断是否选择了表格
+            if (selectedSheetName !== '') {
+                const worksheet = workbook.Sheets[selectedSheetName];
+                const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                // 创建一个新的表格容器
+                const tableContainer = document.createElement('div');
+                excelContainer.appendChild(tableContainer);
+
+                // 使用handsontable库创建表格
+                new Handsontable(tableContainer, {
+                    data: sheetData,
+                    rowHeaders: true,
+                    colHeaders: true,
+                    licenseKey: 'non-commercial-and-evaluation'
+                });
+            }
+        }
+
+        function handleFileSelect() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx';
+
+            input.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const data = new Uint8Array(e.target.result);
+                    workbook = XLSX.read(data, { type: 'array' });
+
+                    // 清空下拉菜单选项
+                    const select = document.querySelector('select');
+                    select.innerHTML = '<option value="">请选择表格</option>';
+
+                    // 遍历所有的Sheet，动态添加下拉菜单选项
+                    workbook.SheetNames.forEach((sheetName) => {
+                        const option = document.createElement('option');
+                        option.value = sheetName;
+                        option.innerText = sheetName;
+                        select.appendChild(option);
+                    });
+
+                    // 默认选择第一个表格
+                    if (workbook.SheetNames.length > 0) {
+                        const firstSheetName = workbook.SheetNames[0];
+                        select.value = firstSheetName;
+                        showSelectedSheet();
+                    }
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+
+            input.click();
+        }
+    </script>
+</body>
+</html>

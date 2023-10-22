@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    const id = window.frameElement.parentElement.parentElement.getAttribute("data-node-id");
+    
+    function redirectToDocument() {
+      const url = `./data/${id}.html`; // 构建文件路径
+      
+      // 使用XMLHttpRequest对象发送HEAD请求检查文件是否存在
+      const xhr = new XMLHttpRequest();
+      xhr.open('HEAD', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // 如果文件存在，则进行跳转
+            window.location.href = url;
+          } else {
+            console.log("File does not exist."); // 文件不存在时输出提示
+          }
+        }
+      };
+      xhr.send();
+    }
+    
+    window.onload = function() {
+      redirectToDocument(); // 页面加载完成后自动触发函数
+    };
+  </script>
+  <title>文档聚合</title>
+  <style>
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: rgb(47, 0, 255);
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .button:hover {
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>文档聚合</h1>
+  <a href="./pages/doc-save.html" class="button">打开doc文档(永久快照)</a>
+  <a href="./pages/excel-save.html" class="button">打开excel文档(永久快照)</a>
+  <a href="./pages/pdf-save.html" class="button">打开pdf文档(永久快照)</a>
+  <a href="./pages/doc.html" class="button">打开doc文档(临时)</a>
+  <a href="./pages/excel.html" class="button">打开excel文档(临时且支持编辑)</a>
+  <a href="./pages/pdf.html" class="button">打开pdf文档(临时)</a>
+  <a href="./pages/edit.html" class="button">管理快照</a>
+</body>
+<script>
+  const button = document.querySelector('.button');
+  button.setAttribute('onclick', 'redirectToDocument()'); // 添加点击事件处理函数
+</script>
+</html>
