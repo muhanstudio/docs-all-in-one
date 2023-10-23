@@ -1,8 +1,8 @@
 {
-  "name": "文档聚合",
+  "name": "docs-all-in-one",
   "author": "muhanstudio",
   "url": "https://github.com/muhanstudio/docs-all-in-one",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "minAppVersion": "1.1.1",
   "displayName": {
     "default": "docs-all-in-one",
