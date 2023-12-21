@@ -14,13 +14,14 @@
 
 **PDF：**
 
-​![image](readmeimg/image-20231023032622-9xazvaa.png)​
+已经删除支持组件，因为集市已经上架兼容性更好的PDF嵌入插件，详情见：[思源PDF嵌入器](https://github.com/muhanstudio/siyuan-plugin-embedding-pdf)
 
 ### 万众期待但BUG一堆的Excel表格：
 
 ​![image](readmeimg/image-20231023032826-12i5o8b.png)
 
 已知bug：只会显示表头非空的列
+即将下架此嵌入，并移交插件管理，详情见：[支持在笔记中嵌入可以预览的excel文件](https://github.com/users/muhanstudio/projects/1/views/2?pane=issue&itemId=48167200)
 
 ### 关于不同选项：
 

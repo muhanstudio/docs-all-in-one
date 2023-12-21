@@ -13,13 +13,15 @@
 
 **PDF:**
 
-​![image](readmeimg/image-20231023032622-9xazvaa.png)
+Has been removed to support components, because the bazaar has been on the shelves of better compatibility with the PDF embedding plug-ins, see: [SiYuan PDF Embedding](https://github.com/muhanstudio/siyuan-plugin-embedding-pdf)
 
 ### Excel spreadsheets that are eagerly anticipated but have a lot of bugs:
 
 ​![image](readmeimg/image-20231023032826-12i5o8b.png)
 
-Known bug: only columns with non empty header will be displayed
+Known bug: only columns with non-empty headers will be shown 
+
+This embed will be taken down soon and handed over to plugin management, see: [Support for embedding excel files in notes that can be previewed] (https://github.com/users/muhanstudio/projects/1/views/2?pane=issue&itemId=48167200)
 
 ### Regarding different options:
 
